@@ -1,0 +1,78 @@
+Comandos de la primera clase:
+
+sudo apt install [programa] -> XDD
+
+sudo apt list --installed -> Enseña los programas instalados
+
+sudo apt autoremove -purge [programa] -> desinstalar un programa y las dependencias 
+
+man [programa] -> manual
+
+whatis [Programa] -> descripcion corta
+
+man -k [término] -> buscar en todos los programas
+
+apt search [término] -> buscar programas que hagan ese término
+
+apt show [Programa] -> enseñar documentación de un programa NO INSTALADO
+
+cd -> moverse entre directorios
+
+ls -> lista contenidos 
+ls -l -> detalles
+ls -a -> ficheros ocultos
+
+find -> buscar ficheros a partir del directorio actual
+
+locate -> buscar en todo el sistema
+
+mkdir -> crear directorio
+
+rm -> borrar
+rm -rf -> directorio
+
+& -> Proceso en segundo plano
+
+| -> Redirigir la salida de un proceso al siguiente
+
+> -> Redirige la salida a un fichero
+
+&& -> Permite ejecutar varios comandos a la vez de manera independiente.
+
+>> -> Escribe al final del fichero
+
+xargs -> visualiza o ejecuta las salidas de otro proceso.
+
+cat -> visualiza un fichero.
+
+head -n <numero> -> escribe ese numero de lineas al principio de un fichero
+
+tail -n <numero> -> escribe ese numero de lineas al final de un fichero
+
+tail -f -> esta actualizando el fichero.
+
+less -> navegar por ficheros
+
+nl -> te imprime el numero de linea en el fichero.
+
+grep -> busca patron de texto (-ri -> recursivo)
+
+wc -> cuenta numero de caracteres (-l cuenta numero de lineas)
+
+uniq -> devuelve solo las lineas no repetidas
+
+for i in $(seq 1 1 25); do echo $i; done
+
+cat /proc/cpuinfo -> información del ordenador
+
+pstree -> arbol de procesos
+
+ps -> procesos
+
+df  -h -> muestra espacio libre en disco
+
+free -> ram libre
+
+alias -> crear "atajos"
+
+watch 
