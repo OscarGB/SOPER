@@ -23,17 +23,19 @@ int main (void)
 		exit(EXIT_FAILURE);
 	}
 	for (i=0; i < NUM_PROC; i++){
-		if (pid ==0){
-			sleep(1);
+		if (pid == 0){
+			
 			printf("HIJO %d / PADRE: %d\n", getpid(), getppid());
 		}else{
 			if ((pid=fork()) <0 ){
 				printf("Error haciendo fork\n");
 				exit(EXIT_FAILURE);
 			}
-			printf ("PADRE %d\n", i);
+			else if (pid > 0) {
+				printf ("PADRE %d\n", getpid());	
+			}
 		}
 	}
-	wait(&c);
+	while(wait(NULL) > 0);
 	exit(EXIT_SUCCESS);
 }

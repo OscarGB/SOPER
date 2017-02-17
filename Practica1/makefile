@@ -1,6 +1,6 @@
 COMPILE = gcc -g -c  
 LINK = gcc -g -o
-EXEC = ejercicio4a ejercicio4b ejercicio5a
+EXEC = ejercicio4a ejercicio4b ejercicio5a ejercicio5b
 
 all: $(EXEC)
 
@@ -15,6 +15,10 @@ ejercicio4b: ejercicio4b.c
 ejercicio5a: ejercicio5a.c
 	$(COMPILE) ejercicio5a.c
 	$(LINK) ejercicio5a ejercicio5a.o
+
+ejercicio5b: ejercicio5b.c
+	$(COMPILE) ejercicio5b.c
+	$(LINK) ejercicio5b ejercicio5b.o
 
 clean:
 	rm -rf *.o $(EXEC)
