@@ -1,5 +1,5 @@
 /**
-* @file ejercicio4.c
+* @file ejercicio4a.c
 * @author Jose Ignacio Garcia, Óscar Gómez
 * @date 10-02-2017
 */
@@ -8,7 +8,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#define NUM_PROC 3
+
+#define NUM_PROC 3 /*!< Ńumero de iteraciones*/
+
 
 int main (void)
 {
@@ -20,12 +22,11 @@ int main (void)
 			printf("Error al emplear fork\n");
 			exit(EXIT_FAILURE);
 		}else if (pid ==0){
+			sleep(1);
 			printf("HIJO %d / PADRE: %d\n", getpid(), getppid());
 		}else{
 			printf ("PADRE %d \n", getpid());
 		}
 	}
-	c = getchar();
 	exit(EXIT_SUCCESS);
-
 }	
