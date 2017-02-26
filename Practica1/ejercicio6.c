@@ -14,21 +14,27 @@
 
 int main() {
 	char *string;
-	int estado;
+	int estado, div;
 
 	string = (char *)malloc(80*sizeof(char));
 	if(!string) return -1;
 
 	strcpy(string, "Vacio");
 
-	if(fork() == 0){
+	div = fork();
+
+	if(div == 0){
 		scanf("%s", string);
 
 		printf("La cadena en el hijo vale: %s\n", string);
 	}
-	else {
+	else if (div > 0){
 		wait(&estado);
 		printf("La cadena en el padre vale: %s\n", string);
+	}
+	else {
+		printf("Error haciendo fork\n");
+		exit(EXIT_FAILURE);
 	}
 
 	free(string);
