@@ -13,33 +13,33 @@
 #include <sys/types.h>
 
 int main() {
-	char *string;
-	int estado, div;
+    char *string;
+    int estado, div;
 
-	string = (char *)malloc(80*sizeof(char));
-	if(!string) return -1;
+    string = (char *)malloc(80*sizeof(char));
+    if(!string) return -1;
 
-	strcpy(string, "Vacio");
+    strcpy(string, "Vacio");
 
-	div = fork();
+    div = fork();
 
-	if(div == 0){
-		scanf("%s", string);
+    if(div == 0){
+        scanf("%s", string);
 
-		printf("La cadena en el hijo vale: %s\n", string);
-	}
-	else if (div > 0){
-		wait(&estado);
-		printf("La cadena en el padre vale: %s\n", string);
-	}
-	else {
-		printf("Error haciendo fork\n");
-		exit(EXIT_FAILURE);
-	}
+        printf("La cadena en el hijo vale: %s\n", string);
+    }
+    else if (div > 0){
+        wait(&estado);
+        printf("La cadena en el padre vale: %s\n", string);
+    }
+    else {
+        printf("Error haciendo fork\n");
+        exit(EXIT_FAILURE);
+    }
 
-	free(string);
+    free(string);
 
-	exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);
 
-	return 0;
+    return 0;
 }
