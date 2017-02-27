@@ -4,6 +4,9 @@
 * @date 26-02-2017
 */
 
+#define COMMANDS 2
+#define COMMANDSIZE 20
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -17,7 +20,7 @@ int main(int argc, char const *argv[]) {
 	char *noll[] = {NULL};
 	char path[20] = "/bin/";
 	int status;
-	char *prog[20] = { "programasssssssssssssss", NULL};
+	char **prog;
 
 	flag = argc - 1;
 
@@ -74,6 +77,13 @@ int main(int argc, char const *argv[]) {
 
 		var = fork();
 
+		prog = (char **)malloc(sizeof(char*) * COMMANDS); /*array de strings*/
+
+		for( i = 0; i < COMMANDS - 1; i++){
+			prog[i] = (char *)malloc(sizeof(char) * COMMANDSIZE);
+		}
+		prog[COMMANDS - 1] = NULL; /*El ultimo tiene que ser NULL*/
+
 		for(i = 1; i < flag; i++){
 			if(var == 0) { /*Si es un hijo, ejecuta el exec del flag*/
 				strcat(path, argv[i]);
@@ -93,12 +103,22 @@ int main(int argc, char const *argv[]) {
 				exit(EXIT_FAILURE);
 			}
 		}
-
+		for( i = 0; i < COMMANDS - 1; i++){
+			free(prog[i]);
+		}
+		free(prog);
 	}
 	else if(strcmp(argv[flag], "-vp") == 0) { /*Asumimos que el flag del exec va a 
 										ser el último argumento*/
 
 		var = fork();
+
+		prog = (char **)malloc(sizeof(char*) * COMMANDS); /*array de strings*/
+
+		for( i = 0; i < COMMANDS - 1; i++){
+			prog[i] = (char *)malloc(sizeof(char) * COMMANDSIZE);
+		}
+		prog[COMMANDS - 1] = NULL; /*El ultimo tiene que ser NULL*/
 
 		for(i = 1; i < flag; i++){
 			if(var == 0) { /*Si es un hijo, ejecuta el exec del flag*/
@@ -125,7 +145,6 @@ int main(int argc, char const *argv[]) {
 		exit(EXIT_FAILURE);
 		return -1;
 	}
-	printf("%d", getpid());
 	wait(&status);
 	exit(EXIT_SUCCESS);
 	return 0;
