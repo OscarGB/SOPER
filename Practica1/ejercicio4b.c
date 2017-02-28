@@ -15,21 +15,21 @@
 
 int main (void)
 {
-	int pid;
-	int i;
-	int c;
-	for (i=0; i < NUM_PROC; i++){
-		if ((pid=fork()) <0 ){
-			printf("Error haciendo fork\n");
-			exit(EXIT_FAILURE);
-		}else if (pid ==0){
-			sleep(1);
-			printf("HIJO %d / PADRE: %d\n", getpid(), getppid());
-		}else{
+    int pid;
+    int i;
+    int c;
+    for (i=0; i < NUM_PROC; i++){
+        if ((pid=fork()) <0 ){
+            printf("Error haciendo fork\n");
+            exit(EXIT_FAILURE);
+        }else if (pid ==0){
+            sleep(1);
+            printf("HIJO %d / PADRE: %d\n", getpid(), getppid());
+        }else{
 
-			printf ("PADRE %d\n", i);
-		}
-	}
-	wait(&c);
-	exit(EXIT_SUCCESS);
+            printf ("PADRE %d\n", i);
+        }
+    }
+    wait(&c);
+    exit(EXIT_SUCCESS);
 }
