@@ -12,8 +12,8 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-#define LECTURA 0
-#define ESCRITURA 1
+#define R 0
+#define W 1
 
 typedef enum {
 	SUMA = 0, RESTA, PRODUCTO, COCIENTE,
@@ -63,21 +63,21 @@ int main() {
 			exit(EXIT_FAILURE);
 		}
 		if(pchild > 0) {
-			close(a[0]); /*Para escribir*/
-			close(b[1]); /*Para leer*/
-			write(a[1], string, strlen(string));
+			close(a[R]); /*Para escribir*/
+			close(b[W]); /*Para leer*/
+			write(a[W], string, strlen(string));
 			wait(&status);
 			strcpy(readbuffer, "");
-			nbytes = read(b[0], readbuffer, sizeof(readbuffer));
+			nbytes = read(b[R], readbuffer, sizeof(readbuffer));
 			printf("%s", readbuffer);
 			if(i < 3){
 				//pchild = fork();
 			}
 		}
 		if(pchild == 0){
-			close(a[1]); /*Para leer*/
-			close(b[0]); /*Para escribir*/
-			nbytes = read(a[0], readbuffer, sizeof(readbuffer));
+			close(a[W]); /*Para leer*/
+			close(b[R]); /*Para escribir*/
+			nbytes = read(a[R], readbuffer, sizeof(readbuffer));
 
 /*printf("read: %s\n", readbuffer);*/
 
@@ -109,7 +109,7 @@ int main() {
 
 				sprintf(childbuffer, "Datos enviados a través de la tubería por el proceso PID= %d\nOperando 1: %d. Operando 2: %d. Cociente: %d\n", getpid(), op1, op2, resultado);
 			}
-			write(b[1], childbuffer, strlen(childbuffer));
+			write(b[W], childbuffer, strlen(childbuffer));
 			exit(EXIT_SUCCESS);
 		}
 	}
