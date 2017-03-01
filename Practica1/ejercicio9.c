@@ -24,7 +24,7 @@ int main() {
 	int op1, op2, resultado, i; 
 	int a[2], b[2], pipe_status, nbytes; /*El pipe a va de padre a hijo*/
 	char *string = "20,40\n";
-	char readbuffer[120], childbuffer[120];
+	char readbuffer[200], childbuffer[200];
 	char *tok1 = NULL, *tok2 = NULL;
 	int status;
 
