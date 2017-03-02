@@ -6,9 +6,6 @@
 * Pareja: 5
 */
 
-#define COMMANDS 2
-#define COMMANDSIZE 20
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
