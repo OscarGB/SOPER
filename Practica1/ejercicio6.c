@@ -1,7 +1,9 @@
 /**
-* @file ejercicio6.c
-* @author Jose Ignacio Garcia, Óscar Gómez
-* @date 26-02-2017
+* Nombre: ejercicio6.c
+* Autores: Jose Ignacio Garcia, Óscar Gómez
+* Fecha: 25-02-2017
+* Grupo: 2202
+* Pareja: 5
 */
 
 #include <stdio.h>
@@ -12,23 +14,25 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-int main() {
-    char *string;
-    int estado, div;
+int main(void) {
+    char *string; /*Cadena en la que almacenaremos los datos leídos*/
+    int estado; /*int de estado para pasar al wait como argumento*/
+    int pid; /*id del proceso tras el fork*/
 
-    string = (char *)malloc(80*sizeof(char));
+    string = (char *)malloc(80*sizeof(char)); /*Reservamos memoria para los datos leidos*/
     if(!string) return -1;
 
-    strcpy(string, "Vacio");
+    strcpy(string, "Vacio"); /*Inicilaizamos la cadena para que 
+                            el padre muestre un contenido no vacío*/
 
-    div = fork();
+    pid = fork();
 
-    if(div == 0){
+    if(pid == 0){
         scanf("%s", string);
 
         printf("La cadena en el hijo vale: %s\n", string);
     }
-    else if (div > 0){
+    else if (pid > 0){
         wait(&estado);
         printf("La cadena en el padre vale: %s\n", string);
     }
@@ -40,6 +44,4 @@ int main() {
     free(string);
 
     exit(EXIT_SUCCESS);
-
-    return 0;
 }
