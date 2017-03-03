@@ -1,11 +1,10 @@
 /**
-* @file ejercicio8.c
-* @author Jose Ignacio Garcia, Óscar Gómez
-* @date 26-02-2017
+* Nombre: ejercicio8.c
+* Autores: Jose Ignacio Garcia, Óscar Gómez
+* Fecha: 27-02-2017
+* Grupo: 2202
+* Pareja: 5
 */
-
-#define COMMANDS 2
-#define COMMANDSIZE 20
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,12 +15,14 @@
 #include <sys/types.h>
 
 int main(int argc, char const *argv[]) {
-    int flag = argc - 1;
-    char path[20] = "/bin/";
-    int status, i;
-    char aux[100];
-    char *prog[] = {aux, (char*) NULL};
-    pid_t var;
+    int flag = argc - 1; /*Indica la posición del flag dentro de *argv[]*/
+    char path[20] = "/bin/"; /*Cadena donde almacenaremos el path del comando*/
+    int status, i; 
+    char aux[100]; /*Cadena de caracteres que empleamos como primer elemento
+                    del array prog[]*/
+    char *prog[] = {aux, (char*) NULL}; /*Array de cadenas donde almacenaremos
+                                        los argumentos de las funciones execv y execvp*/
+    pid_t var; /*id del proceso tras el fork*/
 
     if(strcmp(argv[flag], "-l") == 0) { /*Asumimos que el flag del exec va a 
                                         ser el último argumento*/
@@ -30,13 +31,13 @@ int main(int argc, char const *argv[]) {
         for(i = 1; i < flag; i++){
 
             if(var == 0) { /*Si es un hijo, ejecuta el exec del flag*/
-                strcat(path, argv[i]);
+                strcat(path, argv[i]); /*Rellenamos el path*/
                 execl(path, argv[i], NULL);
                 perror("Error en l\n");
                 exit(EXIT_FAILURE);
             }
             else if (var > 0){
-                wait(&status);
+                wait(&status); /*Esperamos a que termine*/
                 if(i < flag - 1){
                     var = fork();
                 }

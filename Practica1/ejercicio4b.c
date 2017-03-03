@@ -1,7 +1,9 @@
 /**
-* @file ejercicio4b.c
-* @author Jose Ignacio Garcia, Óscar Gómez
-* @date 10-02-2017
+* Nombre: ejercicio4b.c
+* Autores: Jose Ignacio Garcia, Óscar Gómez
+* Fecha: 10-02-2017
+* Grupo: 2202
+* Pareja: 5
 */
 
 #include <stdio.h>
@@ -15,21 +17,23 @@
 
 int main (void)
 {
-    int pid;
-    int i;
-    int c;
+    int pid; /*id del proceso tras el fork*/
+    int i; /*Contador de bucle*/
+    int status; /*int de estado para pasar al wait como argumento*/
     for (i=0; i < NUM_PROC; i++){
         if ((pid=fork()) <0 ){
             printf("Error haciendo fork\n");
             exit(EXIT_FAILURE);
         }else if (pid ==0){
-            sleep(1);
+            sleep(1);/*Este sleep bloquea a los hijos para dar tiempo al padre
+                        a salir. Sin él, había huérfanos que llegaban a la impresión antes
+                        de la muerte del padre*/
             printf("HIJO %d / PADRE: %d\n", getpid(), getppid());
         }else{
 
             printf ("PADRE %d\n", i);
         }
     }
-    wait(&c);
+    wait(&status);
     exit(EXIT_SUCCESS);
 }
