@@ -1,3 +1,8 @@
+/**
+* @file ejercicio3a.c
+* @author Jose Ignacio Gomez, Óscar Gómez
+* @date 03-03-2017
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
