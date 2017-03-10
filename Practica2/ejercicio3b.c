@@ -9,7 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <time.h>
+#include <sys/time.h>
 #include <math.h>
 #include <sys/wait.h>
 #include <sys/types.h>
@@ -19,30 +19,47 @@
 #define TRUE 1
 #define FALSE 0
 
-void *calculaPrimo(void *n) {
+int esPrimo(int a) {
 	int i;
-	int *a;
 
-	a = (int*) n;
-
-	for(i = 2; i < *a/2; i++){
-		if((int) *a % i == 0) {
-			pthread_exit(NULL);
-			//return (void *) FALSE;
+	for(i = 2; i < a/2; i++){
+		if((int) a % i == 0) {
+			return FALSE;
 		}
 	}
 
+	return TRUE;
+}
+
+void *calculaPrimo(void *n) {
+	int i, numprimos;
+	int *maxprimos;
+
+	numprimos = 0;
+	i = 0;
+
+	maxprimos = (int*) n;
+
+	while(numprimos < *maxprimos){
+		if(esPrimo(i) == TRUE) {
+			numprimos++;
+		}
+		i++;
+	}
+
+	
 	pthread_exit(NULL);
-	//return (void *)TRUE;
 }	
 
 int main(int argc, char const *argv[]) {	
 	int i, n, numprimos, primo;
 	pthread_t t[MAX_THREAD];
-	clock_t start, end;
-	double time;
 
-	start = clock();
+	double timeTotal;
+
+	struct timeval start, end;
+
+  	gettimeofday(&start, NULL);
 
 	if(argc < 2) {
 		printf("Introduce el número de primos a calcular. \n");
@@ -59,11 +76,12 @@ int main(int argc, char const *argv[]) {
 		pthread_join(t[i], NULL);
 	}
 
-	end = clock();
+	gettimeofday(&end, NULL);
 
-	time = (double) (end - start) / CLOCKS_PER_SEC;
+	timeTotal =  (double)((end.tv_sec * 1000000 + end.tv_usec)
+		  - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000;
 
-	printf("El programa ha tardado %lf segundos en calcular %d primos.\n", time, n);
+	printf("El programa ha tardado %lf segundos en calcular %d primos.\n", timeTotal, n);
 
 	return 0;
 
