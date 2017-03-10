@@ -9,12 +9,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <time.h>
+#include <sys/time.h>
 #include <math.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-
-double sqrt(double a);
 
 #define NUM_HIJOS 100
 #define TRUE 1
@@ -23,7 +21,7 @@ double sqrt(double a);
 int esPrimo(int a) {
 	int i;
 
-	for(i = 2; i < a; i++){
+	for(i = 2; i < a/2; i++){
 		if((int) a % i == 0) {
 			return FALSE;
 		}
@@ -34,10 +32,13 @@ int esPrimo(int a) {
 
 int main(int argc, char const *argv[]) {	
 	int pid, i, n, numprimos, primo;
-	clock_t start, end;
-	double time;
+	
+	double timeTotal;
 
-	start = clock();
+	struct timeval start, end;
+
+  	gettimeofday(&start, NULL);
+
 
 	if(argc < 2) {
 		printf("Introduce el número de primos a calcular. \n");
@@ -65,7 +66,7 @@ int main(int argc, char const *argv[]) {
 			}
 			exit(EXIT_SUCCESS);
 		}
-		else if(pid < 0) {
+		else if(pid < 0) { 	
 			printf("Error en el fork %d.\n", i);
 			exit(EXIT_FAILURE);
 		}
@@ -73,11 +74,12 @@ int main(int argc, char const *argv[]) {
 
 	while(wait(NULL) > 0);
 
-	end = clock();
+	gettimeofday(&end, NULL);
 
-	time = (double) (end - start) / CLOCKS_PER_SEC;
+	timeTotal =  (double)((end.tv_sec * 1000000 + end.tv_usec)
+		  - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000;
 
-	printf("El programa ha tardado %lf segundos en calcular %d primos.\n", time, n);
+	printf("El programa ha tardado %lf segundos en calcular %d primos.\n", timeTotal, n);
 
 	return 0;
 }
