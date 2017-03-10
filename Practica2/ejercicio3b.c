@@ -1,6 +1,6 @@
 /**
 * @file ejercicio3b.c
-* @author Jose Ignacio Garcia, Óscar Gómez
+* @author Jose Ignacio Gomez, Óscar Gómez
 * @date 03-03-2017
 */
 
