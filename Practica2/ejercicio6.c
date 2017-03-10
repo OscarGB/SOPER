@@ -13,12 +13,12 @@ int main(){
 
 	pid = fork();
 
-	while(pid == 0){
+	while(pid == 0){ /*Parte del proceso hijo*/
 		printf("Soy el proceso hijo con PID: %d\n", getpid());
 		sleep(5);
 	}
 
 	sleep(30);
-	status = kill(pid, SIGKILL);
+	status = kill(pid, SIGKILL); /*Señal SIGKILL al proceso hijo*/
 	return 0;
 }
