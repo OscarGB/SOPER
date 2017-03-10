@@ -14,21 +14,23 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
+double sqrt(double a);
+
 #define NUM_HIJOS 100
 #define TRUE 1
 #define FALSE 0
 
-int esPrimo(double a) {
+int esPrimo(int a) {
 	int i;
 
-	for(i = 2; i <= sqrt(a); i++){
+	for(i = 2; i < a; i++){
 		if((int) a % i == 0) {
 			return FALSE;
 		}
 	}
 
 	return TRUE;
-}
+}	
 
 int main(int argc, char const *argv[]) {	
 	int pid, i, n, numprimos, primo;
@@ -55,6 +57,7 @@ int main(int argc, char const *argv[]) {
 				if(esPrimo(primo) == TRUE){
 					primo++;
 					numprimos++;
+
 				}
 				else {
 					primo++;
