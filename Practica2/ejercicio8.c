@@ -38,6 +38,7 @@ int main() {
             printf("HIJO %d / PADRE: %d\n", getpid(), getppid());
         }else{
         	pause();
+        	printf("Hola PID=%d, time=%s\n", )
             printf ("PADRE %d\n", getpid());
         }
     }
