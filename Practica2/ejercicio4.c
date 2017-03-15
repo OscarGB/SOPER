@@ -155,8 +155,8 @@ int main(){
 	/*Fin asignación*/
 
 	/*Creación hilos*/
-	pthread_create(&(h1->p), NULL, multiplica, (void*)h2);
-	pthread_create(&(h2->p), NULL, multiplica, (void*)h1);
+	pthread_create(&(h1->p), NULL, multiplica, (void*)h1);
+	pthread_create(&(h2->p), NULL, multiplica, (void*)h2);
 
 	/*Unión de los hilos con el actual*/
 	pthread_join(h1->p, NULL);
