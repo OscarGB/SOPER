@@ -1,5 +1,5 @@
 /**
-* @file ejercicio6.c
+* @file ejercicio4.c
 * @author Jose Ignacio Gómez, Óscar Gómez
 * @date 10-03-2017
 */
