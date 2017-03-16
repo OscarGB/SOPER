@@ -24,7 +24,7 @@ int main() {
 	int pid, pid_root; /*id del proceso tras el fork*/
     int i; /*Contador de bucle*/
     //int status; /*int de estado para pasar al wait como argumento*/
-    int vueltas = 0;
+    int vueltas = -1;
     int v = 3; /** A BORRAR **/
     int padre = 0; /*1 si el proceso tiene hijos, 0 si no*/
     int son1_pid, last_son_pid;
@@ -33,6 +33,7 @@ int main() {
 	printf("Root es %d | %d\n", root_pid, getpid());
 
 	void manejador_USR1();
+    void manejador_TERM();
 
     if ((pid=fork()) <0 ){
         printf("Error haciendo fork\n");
@@ -65,6 +66,10 @@ int main() {
     printf("Proceso %d\n", getpid());	
 
     while(vueltas < v){
+        if(getpid() == root_pid) {
+            vueltas++;
+            printf("VUELTAS: %d\n", vueltas);
+        }
 		if(padre == 1){
 			//printf("Proceso %d es padre y su hijo es %d\n", getpid(), son_pid);
     		if(signal(SIGUSR1, manejador_USR1) == SIG_ERR){
@@ -76,27 +81,40 @@ int main() {
     	}
     	else {
     		son_pid = root_pid;
-    		printf("Proceso %d es el último hijo, y el root es %d\n", getpid(), root_pid);
+    		//printf("Proceso %d es el último hijo, y el root es %d\n", getpid(), root_pid);
     		if(signal(SIGUSR1, manejador_USR1) == SIG_ERR){
 	    		perror("signal");
 	    		exit(EXIT_FAILURE);
 			}
     		pause();
-    		sleep(2);
-    		son_pid = root_pid;
-    		kill(son_pid, SIGUSR1);
-    	}
-
-    	if(getpid() == root_pid) {
-    		vueltas++;
-    		printf("VUELTAS: %d", vueltas);
+    		
     	}
 
     } /*Fin de bucle*/
 
     /*Ahora el proceso raíz mandará SIGTERM a sus hijos*/
-    kill(son_pid, SIGTERM);
+    if(getpid() == root_pid){
+        kill(son_pid, SIGTERM);
+        if(signal(SIGTERM, SIG_IGN) == SIG_ERR){
+            perror("signal");
+            exit(EXIT_FAILURE);
+        }
+        pause();
 
+    }
+    else{
+        if(padre != 1){
+            son_pid = root_pid;
+        }
+
+        if(signal(SIGTERM, manejador_TERM) == SIG_ERR){
+            perror("signal");
+            exit(EXIT_FAILURE);
+        }
+        pause();
+    }
+
+    printf("Muere PID=%d\n", getpid());
     wait(&status);
     exit(EXIT_SUCCESS);
 
