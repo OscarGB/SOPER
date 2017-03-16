@@ -17,29 +17,20 @@
 
 #define NUM_PROC 4 /*!< Ńumero de iteraciones*/
 
-int son_pid;
-int root_pid;
-int status;
+int son_pid; /*!< Variable para almacenar el pid del proceso hijo*/
+int root_pid; /*!<Variable para almacenar el pid del proceso root*/
+int status; /*!< Variable de estado para los wait*/
 
-time_t tiempo;
+time_t tiempo; /*!< Variables necesarias para trabajar con tiempos*/
 struct tm *tlocal;
-char output[128];
-
-/*
-time_t tiempo = time(0);
-struct tm *tlocal = localtime(&tiempo);
-char output[128];
-strftime(output, 128, "%d/%m/%y %H:%M:%S", tlocal);
-printf("Fecha y Hora: %s",output);
-return 0;
-*/
+char output[128]; /*!< Variable donde almacenaremos la fecha y hora*/
 
 
 int main(int argc, char const *argv[]) {
 	int numproc, vueltas, v = 0;
 	int i;
-	int padre = 0; /*Indica si un proceso tiene hijos (1) o no (0)*/
-	int pid = 0; /*Fijamos pid a 0 para que efectúe un fork()
+	int padre = 0; /*!< Indica si un proceso tiene hijos (1) o no (0)*/
+	int pid = 0; /*!< Fijamos pid a 0 para que efectúe un fork()
 					en la primera iteración del bucle*/
 
 	void manejador_USR1();
@@ -90,6 +81,7 @@ int main(int argc, char const *argv[]) {
 
 	while(v <= vueltas){
 
+		/*Armamos la llegada de señales*/
 		if(signal(SIGUSR1, manejador_USR1) == SIG_ERR){
     		perror("signal");
     		exit(EXIT_FAILURE);
@@ -100,7 +92,7 @@ int main(int argc, char const *argv[]) {
 		}
 		
 
-		pause();
+		pause(); /*Los procesos esperan la llegada de una señal*/
 
 		v++;
 
@@ -132,6 +124,12 @@ int main(int argc, char const *argv[]) {
 	return 0;
 }
 
+/**
+* Manejador para la señal USR1
+* @author Jose Ignacio Gomez, Óscar Gómez
+* @date 16-03-2017
+* @param int signal
+*/
 void manejador_USR1(int signal){
 	tiempo = time(0);
 	tlocal = localtime(&tiempo);
@@ -141,6 +139,12 @@ void manejador_USR1(int signal){
 	kill(son_pid, SIGUSR1);
 }
 
+/**
+* Manejador para la señal TERM
+* @author Jose Ignacio Gomez, Óscar Gómez
+* @date 16-03-2017
+* @param int signal
+*/
 void manejador_TERM(int signal){
 	sleep(1);
 	kill(son_pid, SIGTERM);
@@ -149,6 +153,12 @@ void manejador_TERM(int signal){
 	exit(EXIT_SUCCESS);
 }
 
+/**
+* Manejador para la señal TERM del proceso root
+* @author Jose Ignacio Gomez, Óscar Gómez
+* @date 16-03-2017
+* @param int signal
+*/
 void manejador_FIN(int signal) {
 	printf("Muere PID=%d\n", getpid());
 	wait(&status);
