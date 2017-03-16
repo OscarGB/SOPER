@@ -20,118 +20,117 @@ int son_pid;
 int root_pid;
 int status;
 
-int main() {
-	int pid, pid_root; /*id del proceso tras el fork*/
-    int i; /*Contador de bucle*/
-    //int status; /*int de estado para pasar al wait como argumento*/
-    int vueltas = -1;
-    int v = 3; /** A BORRAR **/
-    int padre = 0; /*1 si el proceso tiene hijos, 0 si no*/
-    int son1_pid, last_son_pid;
-    
-	root_pid = getpid();
-	printf("Root es %d | %d\n", root_pid, getpid());
+int main(int argc, char const *argv[]) {
+	int numproc, vueltas, v = 0;
+	int i;
+	int padre = 0; /*Indica si un proceso tiene hijos (1) o no (0)*/
+	int pid = 0; /*Fijamos pid a 0 para que efectúe un fork()
+					en la primera iteración del bucle*/
 
 	void manejador_USR1();
-    void manejador_TERM();
+	void manejador_TERM();
+	void manejador_FIN();
 
-    if ((pid=fork()) <0 ){
-        printf("Error haciendo fork\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    for(i = 0; i < NUM_PROC ; i++) { /*Generamos el árbol de procesos*/
-    	//printf("PID: %d\n", pid);
-    	if(pid == 0){
-    		if ((pid=fork()) <0 ){
-                printf("Error haciendo fork\n");
-                exit(EXIT_FAILURE);
-            }
-            //printf("Proceso hijo: %d\n", getpid());
-            if(i == NUM_PROC -1 && pid == 0){
-            	//printf("Hola, i: %d\n", i);
-            	son_pid = root_pid;
-            	sleep(5);
-            	kill(son_pid, SIGUSR1);
-            	break;
-            }
-    	}
-    	else {
-    		printf("Proceso padre: %d | Hijo: %d\n", getpid(), pid);
-    		padre = 1;
-    		son_pid = pid;
-    		break;
-    	}
-    }
-    printf("Proceso %d\n", getpid());	
+	if(argc < 3 || argc > 3) {
+		printf("Prueba con: ./ejercicio8 <numero_procesos> <numero_vueltas>\n");
+		return 1;
+	}
 
-    while(vueltas < v){
-        if(getpid() == root_pid) {
-            vueltas++;
-            printf("VUELTAS: %d\n", vueltas);
-        }
-		if(padre == 1){
-			//printf("Proceso %d es padre y su hijo es %d\n", getpid(), son_pid);
-    		if(signal(SIGUSR1, manejador_USR1) == SIG_ERR){
-	    		perror("signal");
-	    		exit(EXIT_FAILURE);
+	numproc = atoi(argv[1]);
+	vueltas = atoi(argv[2]);
+
+	root_pid = getpid(); /*Guardamos el pid del proceso raíz*/
+
+	for(i = 0; i < numproc; i++){
+		if(pid == 0){/*Para generar árboles en serie
+					sólo harán forks los hijos*/
+			if((pid = fork()) < 0) { 
+				perror("Error de fork");
+				exit(EXIT_FAILURE);
 			}
-    		pause(); /*Los padres se quedan esperando la llegada de una señal*/
 
-    	}
-    	else {
-    		son_pid = root_pid;
-    		//printf("Proceso %d es el último hijo, y el root es %d\n", getpid(), root_pid);
-    		if(signal(SIGUSR1, manejador_USR1) == SIG_ERR){
-	    		perror("signal");
-	    		exit(EXIT_FAILURE);
+			else if(i == numproc - 1 && pid == 0){ /*Si es el último proceso,
+											gestiona la primera señal*/
+				son_pid = root_pid; /*El último proceso mandará señales al root*/
+				sleep(5);
+				kill(son_pid, SIGUSR1);
+				break;
 			}
-    		pause();
-    		
-    	}
+			else if (pid > 0) {
+				padre = 1;
+				son_pid = pid;
+				break;
+			}
+		}
+		else{
+			padre = 1;
+			son_pid = pid; /*El pid obtenido en el fork será el pid del hijo*/
+			break;
+		}
+	}
 
-    } /*Fin de bucle*/
+	/*Ahora vamos a gestionar el envío circular de señales*/
 
-    /*Ahora el proceso raíz mandará SIGTERM a sus hijos*/
-    if(getpid() == root_pid){
-        kill(son_pid, SIGTERM);
-        if(signal(SIGTERM, SIG_IGN) == SIG_ERR){
-            perror("signal");
-            exit(EXIT_FAILURE);
-        }
-        pause();
+	while(v <= vueltas){
 
-    }
-    else{
-        if(padre != 1){
-            son_pid = root_pid;
-        }
+		if(signal(SIGUSR1, manejador_USR1) == SIG_ERR){
+    		perror("signal");
+    		exit(EXIT_FAILURE);
+		}
+		if(signal(SIGTERM, manejador_TERM) == SIG_ERR){
+			perror("signal");
+			exit(EXIT_FAILURE);
+		}
+		
 
-        if(signal(SIGTERM, manejador_TERM) == SIG_ERR){
-            perror("signal");
-            exit(EXIT_FAILURE);
-        }
-        pause();
-    }
+		pause();
 
-    printf("Muere PID=%d\n", getpid());
-    wait(&status);
-    exit(EXIT_SUCCESS);
+		v++;
+
+	}
+
+	/*Ahora el root iniciará una cadena de llamadas a TERM*/
+	if(getpid() != root_pid) {
+
+		pause(); /*Espera la llegada de una señal SIGTERM*/
+
+	}
+	else {
+		kill(son_pid, SIGTERM);
+		if(signal(SIGTERM, manejador_FIN) == SIG_ERR){
+    		perror("signal");
+    		exit(EXIT_FAILURE);
+		}
+
+		pause(); /*Espera la llegada de una señal SIGTERM, pero la 
+				ignorará para ejecutar el código siguiente*/
+	}
+
+	/*A continuación, el root debería ser el único capaz de llegar hasta
+	aquí, por lo que realizará un wait y morirá*/
+	printf("Muere PID=%d\n", getpid());
+	wait(&status);
+	exit(EXIT_SUCCESS);
 
 	return 0;
 }
 
-void manejador_USR1(int sig){
-	printf("Proceso %d manda USR1  %d\n", getpid(), son_pid);
-	//printf("Hola PID=%d, time= %s\n", son_pid, "por hacer");
-	sleep(2);
+void manejador_USR1(int signal){
+	printf("Hola PID=%d, time= %s\n", getpid(), "Por definir");
+	sleep(1);
 	kill(son_pid, SIGUSR1);
 }
 
-void manejador_TERM(int sig) {
+void manejador_TERM(int signal){
 	sleep(1);
 	kill(son_pid, SIGTERM);
-	printf("Muere PID=%d\n", son_pid);
+	printf("Muere PID=%d\n", getpid());
+	wait(&status);
+	exit(EXIT_SUCCESS);
+}
+
+void manejador_FIN(int signal) {
+	printf("Muere PID=%d\n", getpid());
 	wait(&status);
 	exit(EXIT_SUCCESS);
 }
