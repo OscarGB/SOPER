@@ -13,12 +13,27 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <signal.h>
+#include <time.h>
 
 #define NUM_PROC 4 /*!< Ńumero de iteraciones*/
 
 int son_pid;
 int root_pid;
 int status;
+
+time_t tiempo;
+struct tm *tlocal;
+char output[128];
+
+/*
+time_t tiempo = time(0);
+struct tm *tlocal = localtime(&tiempo);
+char output[128];
+strftime(output, 128, "%d/%m/%y %H:%M:%S", tlocal);
+printf("Fecha y Hora: %s",output);
+return 0;
+*/
+
 
 int main(int argc, char const *argv[]) {
 	int numproc, vueltas, v = 0;
@@ -30,6 +45,8 @@ int main(int argc, char const *argv[]) {
 	void manejador_USR1();
 	void manejador_TERM();
 	void manejador_FIN();
+
+	
 
 	if(argc < 3 || argc > 3) {
 		printf("Prueba con: ./ejercicio8 <numero_procesos> <numero_vueltas>\n");
@@ -116,7 +133,10 @@ int main(int argc, char const *argv[]) {
 }
 
 void manejador_USR1(int signal){
-	printf("Hola PID=%d, time= %s\n", getpid(), "Por definir");
+	tiempo = time(0);
+	tlocal = localtime(&tiempo);
+	strftime(output, 128, "%d/%m/%y %H:%M:%S", tlocal);
+	printf("Hola PID=%d, time= %s\n", getpid(), output);
 	sleep(1);
 	kill(son_pid, SIGUSR1);
 }
