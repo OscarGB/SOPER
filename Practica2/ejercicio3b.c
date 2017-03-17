@@ -27,15 +27,15 @@
  * @return int, boolean, verdadero o falso
  */
 int esPrimo(int a) {
-	int i;
+    int i;
 
-	for(i = 2; i < a/2; i++){ /*Sólo hasta a/2 para mejorar la eficiencia*/
-		if((int) a % i == 0) {
-			return FALSE;
-		}
-	}
+    for(i = 2; i < a/2; i++){ /*Sólo hasta a/2 para mejorar la eficiencia*/
+        if((int) a % i == 0) {
+            return FALSE;
+        }
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 /**
@@ -45,56 +45,56 @@ int esPrimo(int a) {
  * @param void *n, número de primos a calcular
  */
 void *calculaPrimo(void *n) {
-	int i, numprimos;
-	int *maxprimos;
+    int i, numprimos;
+    int *maxprimos;
 
-	numprimos = 0;
-	i = 0;
+    numprimos = 0;
+    i = 0;
 
-	maxprimos = (int*) n;
+    maxprimos = (int*) n;
 
-	while(numprimos < *maxprimos){
-		if(esPrimo(i) == TRUE) { /*Comprobación de si es primo o no*/
-			numprimos++;
-		}
-		i++;
-	}
+    while(numprimos < *maxprimos){
+        if(esPrimo(i) == TRUE) { /*Comprobación de si es primo o no*/
+            numprimos++;
+        }
+        i++;
+    }
 
-	
-	pthread_exit(NULL);
-}	
+    
+    pthread_exit(NULL);
+}   
 
-int main(int argc, char const *argv[]) {	
-	int i, n, numprimos, primo;
-	pthread_t t[MAX_THREAD]; /*Array de threads*/
+int main(int argc, char const *argv[]) {    
+    int i, n, numprimos, primo;
+    pthread_t t[MAX_THREAD]; /*Array de threads*/
 
-	double timeTotal; 
+    double timeTotal; 
 
-	struct timeval start, end; /*Estructuras para calcular tiempos*/
+    struct timeval start, end; /*Estructuras para calcular tiempos*/
 
-  	gettimeofday(&start, NULL); /*Inicio de la contabilización de tiempos*/
+    gettimeofday(&start, NULL); /*Inicio de la contabilización de tiempos*/
 
-	if(argc < 2) {
-		printf("Introduce el número de primos a calcular. \n");
-		return -1;
-	}
+    if(argc < 2) {
+        printf("Introduce el número de primos a calcular. \n");
+        return -1;
+    }
 
-	n = atoi(argv[1]);
+    n = atoi(argv[1]);
 
-	for(i = 0; i < MAX_THREAD; i++) {
-		pthread_create(&(t[i]), NULL, calculaPrimo, (void*) &n);
-	}
+    for(i = 0; i < MAX_THREAD; i++) {
+        pthread_create(&(t[i]), NULL, calculaPrimo, (void*) &n);
+    }
 
-	for(i = 0; i < MAX_THREAD; i++) {
-		pthread_join(t[i], NULL);
-	}
+    for(i = 0; i < MAX_THREAD; i++) {
+        pthread_join(t[i], NULL);
+    }
 
-	gettimeofday(&end, NULL); /*Fin de la contabilización de tiempo*/
+    gettimeofday(&end, NULL); /*Fin de la contabilización de tiempo*/
 
-	timeTotal =  (double)((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000; /*Calculo del tiempo total*/
+    timeTotal =  (double)((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)) / 1000000; /*Calculo del tiempo total*/
 
-	printf("El programa ha tardado %lf segundos en calcular %d primos.\n", timeTotal, n);
+    printf("El programa ha tardado %lf segundos en calcular %d primos.\n", timeTotal, n);
 
-	return 0;
+    return 0;
 
 }
