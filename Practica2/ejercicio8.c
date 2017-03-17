@@ -29,7 +29,6 @@ char output[128]; /*!< Variable donde almacenaremos la fecha y hora*/
 int main(int argc, char const *argv[]) {
 	int numproc, vueltas, v = 0;
 	int i;
-	int padre = 0; /*!< Indica si un proceso tiene hijos (1) o no (0)*/
 	int pid = 0; /*!< Fijamos pid a 0 para que efectúe un fork()
 					en la primera iteración del bucle*/
 
@@ -65,13 +64,11 @@ int main(int argc, char const *argv[]) {
 				break;
 			}
 			else if (pid > 0) {
-				padre = 1;
 				son_pid = pid;
 				break;
 			}
 		}
 		else{
-			padre = 1;
 			son_pid = pid; /*El pid obtenido en el fork será el pid del hijo*/
 			break;
 		}
@@ -135,7 +132,7 @@ void manejador_USR1(int signal){
 	tlocal = localtime(&tiempo);
 	strftime(output, 128, "%d/%m/%y %H:%M:%S", tlocal);
 	printf("Hola PID=%d, time= %s\n", getpid(), output);
-	sleep(1);
+	sleep(2);
 	kill(son_pid, SIGUSR1);
 }
 
