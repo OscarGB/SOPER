@@ -135,7 +135,7 @@ void manejador_USR1(int signal){
     tlocal = localtime(&tiempo);
     strftime(output, 128, "%d/%m/%y %H:%M:%S", tlocal);
     printf("Hola PID=%d, time= %s\n", getpid(), output);
-    sleep(1);
+    sleep(2);
     kill(son_pid, SIGUSR1);
 }
 
