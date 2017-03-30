@@ -1,9 +1,13 @@
 COMPILE = gcc -g -c  
 LINK = gcc -g -o
-EXEC = #ejercicio3a ejercicio3b ejercicio4 ejercicio6 ejercicio10 ejercicio8
+EXEC = ejercicio2 #ejercicio3a ejercicio3b ejercicio4 ejercicio6 ejercicio10 ejercicio8
 THREAD = -lpthread
 
 all: $(EXEC)
+
+ejercicio2: ejercicio2.c
+	$(COMPILE) ejercicio2.c $(THREAD)
+	$(LINK) ejercicio2 ejercicio2.o $(THREAD)
 
 ejercicio3a: ejercicio3a.c
 	$(COMPILE) ejercicio3a.c
