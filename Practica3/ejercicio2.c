@@ -9,11 +9,12 @@
 #include <errno.h>
 #include <sys/shm.h>
 #include <time.h>
+
 #define FILEKEY "/bin/cat"
 #define KEY 1300
 #define MAXBUF 10
 
-#define MAXTIME 10
+#define MAXTIME 20
 
 typedef struct info {
     char nombre[80];
